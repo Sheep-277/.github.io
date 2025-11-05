@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>爱心弹窗表白</title>
+    <title>给一凡的专属惊喜</title>
     <style>
         * {
             margin: 0;
@@ -15,72 +15,52 @@
             background: linear-gradient(135deg, #ffafbd, #ffc3a0);
             font-family: 'Microsoft YaHei', sans-serif;
             min-height: 100vh;
-            overflow-x: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
+            overflow: hidden;
+            position: relative;
         }
         
-        .container {
+        .welcome-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             text-align: center;
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.95);
             padding: 30px;
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
             max-width: 90%;
+            animation: fadeIn 2s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -40%); }
+            to { opacity: 1; transform: translate(-50%, -50%); }
         }
         
         h1 {
             color: #e91e63;
-            margin-bottom: 20px;
-            font-size: 2.2em;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+            font-size: 1.8em;
         }
         
-        .description {
+        .subtitle {
             color: #666;
-            margin-bottom: 25px;
-            line-height: 1.6;
+            margin-bottom: 20px;
             font-size: 1.1em;
         }
         
-        .start-btn {
-            background: linear-gradient(45deg, #e91e63, #ff4081);
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            font-size: 1.2em;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(233, 30, 99, 0.4);
-            margin: 10px;
+        .start-hint {
+            color: #e91e63;
+            font-size: 0.9em;
+            margin-top: 15px;
+            animation: blink 2s infinite;
         }
         
-        .start-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(233, 30, 99, 0.6);
-        }
-        
-        .stop-btn {
-            background: linear-gradient(45deg, #2196f3, #21cbf3);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            font-size: 1em;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.4);
-            margin: 10px;
-        }
-        
-        .stop-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(33, 150, 243, 0.6);
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
         }
         
         .love-popup {
@@ -93,14 +73,16 @@
             animation: float 3s ease-in-out infinite;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
             transition: all 0.3s ease;
-            z-index: 1000;
+            z-index: 100;
             text-align: center;
-            min-width: 100px;
+            min-width: 120px;
+            max-width: 200px;
+            word-wrap: break-word;
         }
         
         .love-popup:hover {
             transform: scale(1.1);
-            z-index: 1001;
+            z-index: 101;
         }
         
         @keyframes float {
@@ -108,63 +90,50 @@
             50% { transform: translateY(-20px) rotate(5deg); }
         }
         
-        .instructions {
-            background: rgba(255, 255, 255, 0.8);
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 20px;
-            font-size: 0.9em;
-            color: #666;
-            max-width: 500px;
-        }
-        
-        .heart {
-            color: #e91e63;
-            font-size: 1.5em;
-            margin: 0 5px;
-            animation: heartbeat 1.5s ease-in-out infinite;
-        }
-        
-        @keyframes heartbeat {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.3); }
-        }
-        
-        .counter {
-            margin-top: 15px;
-            font-size: 1.1em;
-            color: #e91e63;
-            font-weight: bold;
+        .footer-note {
+            position: fixed;
+            bottom: 10px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.8em;
+            z-index: 1000;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>💖 爱心弹窗表白 💖</h1>
-        <p class="description">点击下方按钮，开启浪漫的爱心弹窗效果！每个爱心都可以点击关闭哦~</p>
-        
-        <button class="start-btn" onclick="startLovePopups()">✨ 开启爱心弹窗 ✨</button>
-        <button class="stop-btn" onclick="stopLovePopups()">⏹️ 停止创建弹窗</button>
-        <button class="stop-btn" onclick="clearAllPopups()">🗑️ 清除所有弹窗</button>
-        
-        <div class="counter">
-            当前弹窗数量: <span id="popupCount">0</span>
-        </div>
-        
-        <div class="instructions">
-            <p>💡 提示：点击爱心可以关闭单个弹窗，点击"清除所有弹窗"可以一键清理</p>
-            <p>📱 在手机上也可以完美运行！</p>
-        </div>
+    <div class="welcome-message" id="welcomeMessage">
+        <h1>💖 给阿凡的惊喜</h1>
+        <p class="subtitle">页面加载中，即将为你呈现专属爱心...</p>
+        <p class="start-hint">点击爱心可以关闭，按返回键退出</p>
     </div>
+
+    <div class="footer-note">专属</div>
 
     <script>
         const loveTexts = [
-            '我喜欢你', '❤️', '喜欢你', 'love you', '想你了', '❤️❤️❤️', 
-            '永远爱你', '你最可爱', '心动瞬间', '满屏爱意', '❤️心动', 
-            '超喜欢你', '你是我的唯一', '我爱你', '❤️永恒', '我想和你在一起',
-            '遇见你真好', '❤️心之所向', '每天想你', '你最特别', '一生有你',
-            '❤️甜甜蜜蜜', '喜欢你的一切', '只喜欢你', '心跳加速', '❤️浪漫时光'
+            '阿凡，你好美', '阿凡最可爱啦', '一凡的笑容真甜qwq','凡凡最闪亮❤',
+            '阿凡，想你啦', '凡凡要开心哦', '阿凡，照顾好自己', '喜欢你魏一凡',
+            '一凡今天还好吗', '凡凡要幸福呀', '魏一凡，你好特别', '阿凡要天天开心',
+            '想你了', '凡凡最棒了', '魏一凡，要自信', '一凡笑起来真好看',
+            '凡凡注意休息', '一凡要好好吃饭', '魏一凡，你很优秀', '凡凡加油',
+            '一凡要爱自己O-O', '凡凡注意休息', '一凡要快乐','Hava a nice day!@a@',
+             '阿凡要好好的', '凡凡最善良', '魏一凡，我欣赏你','酸角洲把把百万撤离',
+            '一凡要温暖', '凡凡要勇敢', '魏一凡，你很重要', '阿凡要平安',
+            '水逆退散！！',
+            '暴富暴美暴开心~', '好运爆棚鸭(●ˇ∀ˇ●)', '锦鲤附体！！', 
+            '欧气满满(￣▽￣)~*', '心想事成鸭', '好运连连✨', 
+            '平安喜乐(´▽`ʃ♡ƪ)', '万事胜意呀', '天天开心鸭~', 
+            '好运来敲门啦', '福气满满٩(◕‿◕｡)۶', '元气满满的一天', 
+            '好运加持中✨', '快乐永驻~', '幸福来敲门啦', 
+            '好运爆表(ノ◕ヮ◕)ノ', '心想事成喵~', '平安顺遂呀', 
+            '好运常伴左右', '开心每一天(｡♥‿♥｡)', '福气爆棚~', 
+            '好运连连来', '快乐无限续杯', '幸福指数up↑', 
+            '好运正在派送中', '开心到飞起~', '好运永相随✨',
+            '平安健康(づ｡◕‿‿◕｡)づ', '万事如意呀', '好运降临~'
         ];
+        
         
         const colors = [
             '#F8C8DC', '#F5A9CB', '#E9967A', '#F0E68C', '#98FB98', 
@@ -175,22 +144,31 @@
         
         let popupInterval;
         let popupCount = 0;
+        let welcomeShown = false;
+        
+        // 页面加载后自动开始
+        window.onload = function() {
+            setTimeout(() => {
+                document.getElementById('welcomeMessage').style.display = 'none';
+                welcomeShown = true;
+                startLovePopups();
+            }, 2000);
+        };
         
         function createPopup() {
             const popup = document.createElement('div');
             popup.className = 'love-popup';
             
-            // 随机选择内容和样式
             const text = loveTexts[Math.floor(Math.random() * loveTexts.length)];
             const bgColor = colors[Math.floor(Math.random() * colors.length)];
             
             popup.textContent = text;
             popup.style.backgroundColor = bgColor;
             popup.style.color = '#000000';
-            popup.style.left = Math.random() * (window.innerWidth - 120) + 'px';
+            popup.style.left = Math.random() * (window.innerWidth - 140) + 'px';
             popup.style.top = Math.random() * (window.innerHeight - 60) + 'px';
-            popup.style.fontSize = (Math.random() * 10 + 14) + 'px';
-            popup.style.transform = `rotate(${Math.random() * 20 - 10}deg)`;
+            popup.style.fontSize = (Math.random() * 8 + 14) + 'px';
+            popup.style.transform = `rotate(${Math.random() * 15 - 7.5}deg)`;
             
             // 点击关闭功能
             popup.onclick = function() {
@@ -209,8 +187,8 @@
             document.body.appendChild(popup);
             updatePopupCount(1);
             
-            // 自动清理过多的弹窗（超过50个时清理最早的）
-            if (popupCount > 50) {
+            // 自动清理过多的弹窗（超过30个时清理最早的）
+            if (popupCount > 30) {
                 const popups = document.querySelectorAll('.love-popup');
                 if (popups.length > 0) {
                     popups[0].remove();
@@ -220,66 +198,48 @@
         }
         
         function startLovePopups() {
-            // 如果已经有间隔在运行，先清除
-            if (popupInterval) {
-                clearInterval(popupInterval);
-            }
-            
             // 先创建几个初始弹窗
-            for(let i = 0; i < 5; i++) {
-                setTimeout(createPopup, i * 200);
+            for(let i = 0; i < 8; i++) {
+                setTimeout(createPopup, i * 300);
             }
             
             // 设置持续创建的间隔
-            popupInterval = setInterval(createPopup, 300);
-        }
-        
-        function stopLovePopups() {
-            if (popupInterval) {
-                clearInterval(popupInterval);
-                popupInterval = null;
-            }
-        }
-        
-        function clearAllPopups() {
-            stopLovePopups();
-            document.querySelectorAll('.love-popup').forEach(popup => {
-                popup.style.animation = 'none';
-                popup.style.transition = 'all 0.5s ease';
-                popup.style.transform = 'scale(0) rotate(360deg)';
-                popup.style.opacity = '0';
-            });
-            setTimeout(() => {
-                document.querySelectorAll('.love-popup').forEach(popup => {
-                    if (popup.parentNode) {
-                        popup.parentNode.removeChild(popup);
-                    }
-                });
-                popupCount = 0;
-                updatePopupCount(0);
-            }, 500);
+            popupInterval = setInterval(createPopup, 400);
         }
         
         function updatePopupCount(change) {
-            if (change === 0) {
-                popupCount = 0;
-            } else {
-                popupCount += change;
-            }
-            document.getElementById('popupCount').textContent = popupCount;
+            popupCount += change;
         }
         
-        // 页面加载时显示使用说明
-        window.onload = function() {
-            // 可以在这里添加页面加载时的初始化代码
-        };
-        
-        // 防止页面滚动
+        // 防止页面滚动（移动端优化）
         document.addEventListener('touchmove', function(e) {
-            if (e.target.classList.contains('love-popup')) {
+            e.preventDefault();
+        }, { passive: false });
+        
+        // 返回键处理
+        window.addEventListener('popstate', function() {
+            if (welcomeShown) {
+                // 清除所有弹窗
+                document.querySelectorAll('.love-popup').forEach(popup => {
+                    popup.remove();
+                });
+                if (popupInterval) {
+                    clearInterval(popupInterval);
+                }
+            }
+        });
+        
+        document.body.addEventListener('touchstart', function(e) {
+            if (e.touches.length > 1) {
                 e.preventDefault();
             }
-        }, { passive: false });
+        });
+        
+        document.body.addEventListener('touchmove', function(e) {
+            if (e.touches.length > 1) {
+                e.preventDefault();
+            }
+        });
     </script>
 </body>
 </html>
