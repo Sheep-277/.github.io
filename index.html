@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>爱心弹窗表白</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #ffafbd, #ffc3a0);
+            font-family: 'Microsoft YaHei', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
+            max-width: 90%;
+        }
+        
+        h1 {
+            color: #e91e63;
+            margin-bottom: 20px;
+            font-size: 2.2em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .description {
+            color: #666;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            font-size: 1.1em;
+        }
+        
+        .start-btn {
+            background: linear-gradient(45deg, #e91e63, #ff4081);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(233, 30, 99, 0.4);
+            margin: 10px;
+        }
+        
+        .start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(233, 30, 99, 0.6);
+        }
+        
+        .stop-btn {
+            background: linear-gradient(45deg, #2196f3, #21cbf3);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.4);
+            margin: 10px;
+        }
+        
+        .stop-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(33, 150, 243, 0.6);
+        }
+        
+        .love-popup {
+            position: absolute;
+            padding: 12px 20px;
+            border-radius: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            animation: float 3s ease-in-out infinite;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            text-align: center;
+            min-width: 100px;
+        }
+        
+        .love-popup:hover {
+            transform: scale(1.1);
+            z-index: 1001;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+        
+        .instructions {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #666;
+            max-width: 500px;
+        }
+        
+        .heart {
+            color: #e91e63;
+            font-size: 1.5em;
+            margin: 0 5px;
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+        
+        .counter {
+            margin-top: 15px;
+            font-size: 1.1em;
+            color: #e91e63;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💖 爱心弹窗表白 💖</h1>
+        <p class="description">点击下方按钮，开启浪漫的爱心弹窗效果！每个爱心都可以点击关闭哦~</p>
+        
+        <button class="start-btn" onclick="startLovePopups()">✨ 开启爱心弹窗 ✨</button>
+        <button class="stop-btn" onclick="stopLovePopups()">⏹️ 停止创建弹窗</button>
+        <button class="stop-btn" onclick="clearAllPopups()">🗑️ 清除所有弹窗</button>
+        
+        <div class="counter">
+            当前弹窗数量: <span id="popupCount">0</span>
+        </div>
+        
+        <div class="instructions">
+            <p>💡 提示：点击爱心可以关闭单个弹窗，点击"清除所有弹窗"可以一键清理</p>
+            <p>📱 在手机上也可以完美运行！</p>
+        </div>
+    </div>
+
+    <script>
+        const loveTexts = [
+            '我喜欢你', '❤️', '喜欢你', 'love you', '想你了', '❤️❤️❤️', 
+            '永远爱你', '你最可爱', '心动瞬间', '满屏爱意', '❤️心动', 
+            '超喜欢你', '你是我的唯一', '我爱你', '❤️永恒', '我想和你在一起',
+            '遇见你真好', '❤️心之所向', '每天想你', '你最特别', '一生有你',
+            '❤️甜甜蜜蜜', '喜欢你的一切', '只喜欢你', '心跳加速', '❤️浪漫时光'
+        ];
+        
+        const colors = [
+            '#F8C8DC', '#F5A9CB', '#E9967A', '#F0E68C', '#98FB98', 
+            '#87CEEB', '#DDA0DD', '#FFDAB9', '#B0E0E6', '#D8BFD8',
+            '#FFE4B5', '#E6E6FA', '#FFEBCD', '#F5DEB3', '#98D8C8',
+            '#F9CB9C', '#C9A0DC', '#B5EAD7', '#C7CEEA', '#FCE1E4'
+        ];
+        
+        let popupInterval;
+        let popupCount = 0;
+        
+        function createPopup() {
+            const popup = document.createElement('div');
+            popup.className = 'love-popup';
+            
+            // 随机选择内容和样式
+            const text = loveTexts[Math.floor(Math.random() * loveTexts.length)];
+            const bgColor = colors[Math.floor(Math.random() * colors.length)];
+            
+            popup.textContent = text;
+            popup.style.backgroundColor = bgColor;
+            popup.style.color = '#000000';
+            popup.style.left = Math.random() * (window.innerWidth - 120) + 'px';
+            popup.style.top = Math.random() * (window.innerHeight - 60) + 'px';
+            popup.style.fontSize = (Math.random() * 10 + 14) + 'px';
+            popup.style.transform = `rotate(${Math.random() * 20 - 10}deg)`;
+            
+            // 点击关闭功能
+            popup.onclick = function() {
+                this.style.animation = 'none';
+                this.style.transition = 'all 0.5s ease';
+                this.style.transform = 'scale(0) rotate(360deg)';
+                this.style.opacity = '0';
+                setTimeout(() => {
+                    if (this.parentNode) {
+                        this.parentNode.removeChild(this);
+                        updatePopupCount(-1);
+                    }
+                }, 500);
+            };
+            
+            document.body.appendChild(popup);
+            updatePopupCount(1);
+            
+            // 自动清理过多的弹窗（超过50个时清理最早的）
+            if (popupCount > 50) {
+                const popups = document.querySelectorAll('.love-popup');
+                if (popups.length > 0) {
+                    popups[0].remove();
+                    updatePopupCount(-1);
+                }
+            }
+        }
+        
+        function startLovePopups() {
+            // 如果已经有间隔在运行，先清除
+            if (popupInterval) {
+                clearInterval(popupInterval);
+            }
+            
+            // 先创建几个初始弹窗
+            for(let i = 0; i < 5; i++) {
+                setTimeout(createPopup, i * 200);
+            }
+            
+            // 设置持续创建的间隔
+            popupInterval = setInterval(createPopup, 300);
+        }
+        
+        function stopLovePopups() {
+            if (popupInterval) {
+                clearInterval(popupInterval);
+                popupInterval = null;
+            }
+        }
+        
+        function clearAllPopups() {
+            stopLovePopups();
+            document.querySelectorAll('.love-popup').forEach(popup => {
+                popup.style.animation = 'none';
+                popup.style.transition = 'all 0.5s ease';
+                popup.style.transform = 'scale(0) rotate(360deg)';
+                popup.style.opacity = '0';
+            });
+            setTimeout(() => {
+                document.querySelectorAll('.love-popup').forEach(popup => {
+                    if (popup.parentNode) {
+                        popup.parentNode.removeChild(popup);
+                    }
+                });
+                popupCount = 0;
+                updatePopupCount(0);
+            }, 500);
+        }
+        
+        function updatePopupCount(change) {
+            if (change === 0) {
+                popupCount = 0;
+            } else {
+                popupCount += change;
+            }
+            document.getElementById('popupCount').textContent = popupCount;
+        }
+        
+        // 页面加载时显示使用说明
+        window.onload = function() {
+            // 可以在这里添加页面加载时的初始化代码
+        };
+        
+        // 防止页面滚动
+        document.addEventListener('touchmove', function(e) {
+            if (e.target.classList.contains('love-popup')) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+    </script>
+</body>
+</html>
